@@ -22,7 +22,12 @@ The tutorial runs 5 containers:
 - MyNotebook - A Jupyter Notebook interface to interact with out rdf streams/rsp engines
 
 
+
 ## Running the tutorial
+
+Clone this repository or [download it](https://github.com/riccardotommasini/colorwave/archive/master.zip)
+
+From inside the project folder run 
 
 ```docker-compose up```
 
