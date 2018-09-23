@@ -1,16 +1,29 @@
-  524  docker network connect  tutorialrw greenstream
-  525  docker network connect  tutorialrw bluestream
-  526  docker run -d --rm -p 8181:8181 -p 8182-8200:8182-8200 --name jasper jasper
-  527  docker network connect  tutorialrw jasper
-  528  docker run -d -p 9292:9292 --rm --name streamhub streamhub
-  529  docker rm -f streamhub
-  530  docker run -d -p 9292:9292 --rm --name streamhub streamhub
-  531  docker network connect  tutorialrw streamhub
-  532  tail
-  533  history
-  534  history 10
-  535* history 2
-  536  history 12
-  537  history 15
-  538  history 16>history.md
-  539  history 16 >> history.md
+# ColorWave - A Stream Reasoning Tutorial
+
+![img](https://media.realitatea.net/multimedia/image/201707/full/colors_64168900.jpg)
+
+This is the initial repository for the tutorial
+
+The structure works as follow
+
+solutions/ folder contians the solution notebooks
+partial/   folder contains the partially solved exercises so you can jump straight to the point!
+guided/    folder contains notebooks with no code, but each step is commented step-by-step for you to solve
+stub/      folder contains almost empty notebooks that just import the correct libraries 
+
+To run this tutorial you need docker and docker-compose. [Here](https://docs.docker.com/get-started/) there is a tutorial for you to learn how!
+
+
+The tutorial runs 5 containers:
+
+- Jasper - an RSP Engine that will run out continous queries
+- ColorStream - a streamer of color instances in RDF. Three of them will be run: Red, Green and Blue.
+- StreamHub - A Stream Publishing Service
+- MyNotebook - A Jupyter Notebook interface to interact with out rdf streams/rsp engines
+
+
+## Running the tutorial
+
+```docker-compose up```
+
+Then go to [MyNotebook](http://localhost:8080)
