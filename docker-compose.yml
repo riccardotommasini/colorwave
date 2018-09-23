@@ -6,7 +6,7 @@ networks:
 services:
 
     redstream:
-      image: colorwave/colorwave
+      image: streamreasoning/colorstream
       container_name: redstream
       ports:
         - "1255:1255"
@@ -17,7 +17,7 @@ services:
         - red
 
     greenstream:
-      image: colorwave/colorwave
+      image: streamreasoning/colorstream
       container_name: greenstream
       ports:
         - "2255:2255"
@@ -28,7 +28,7 @@ services:
         - green
 
     bluestream:
-      image: colorwave/colorwave
+      image: streamreasoning/colorstream
       container_name: bluestream
       ports:
         - "3255:3255"
@@ -39,7 +39,7 @@ services:
         - blue
 
     streamhub:
-      image: colorwave/streamhub
+      image: streamreasoning/streamhub
       container_name: streamhub
       ports: 
         - "9292:9292"
@@ -47,7 +47,7 @@ services:
         - rwnet
 
     jasper:
-      image: colorwave/jasper
+      image: streamreasoning/jasper
       container_name: jasper
       ports:
         - "8181-8200:8181-8200"
@@ -62,5 +62,5 @@ services:
       networks:
         - rwnet
       volumes:
-        - $PWD:/home/jovyan/work
+        - $PWD/notebook/:/home/jovyan/work
 
