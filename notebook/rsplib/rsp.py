@@ -48,7 +48,6 @@ class RSPService(object):
     def streams(self):
         return self._results(requests.get(self.base + "/streams"))
 
-
 class RSPPublisher(RSPService):
 
     def __init__(self, endpoint):
