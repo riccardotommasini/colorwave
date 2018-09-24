@@ -1,10 +1,8 @@
+var d3 = require('https://d3js.org/d3.v5.min.js')
 
 (function () {
   'use strict';
 
-  require(['https://d3js.org/d3.v5.min.js'], function(d3) {
-
-    
   function jsonldVis(jsonld, selector, config) {
 
     if (!arguments.length) return jsonldVis;
@@ -288,12 +286,11 @@
     update(root);
   } //thisguy
 
-
-  module.exports = jsonldVis;
-
-    });
-
-
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = jsonldVis;
+  } else {
+    d3.jsonldVis = jsonldVis;
+  }
 })();
 
 
