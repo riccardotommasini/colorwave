@@ -1,5 +1,3 @@
-var d3 = require('https://d3js.org/d3.v5.min.js')
-
 (function () {
   'use strict';
 
