@@ -289,8 +289,7 @@
   } //thisguy
 
 
-  if (define) define({jsonldVis:jsonldVis})
-  else  module.exports = jsonldVis;
+  module.exports = jsonldVis;
 
     });
 
