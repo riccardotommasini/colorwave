@@ -3,7 +3,7 @@
 
   function jsonldVis(jsonld, selector, config) {
 
-    require(['https://d3js.org/d3.v5.min.js'], function(d3) {
+    define(['https://d3js.org/d3.v5.min.js'], function(d3) {
                   if (!arguments.length) return jsonldVis;
               config = config || {};
 
