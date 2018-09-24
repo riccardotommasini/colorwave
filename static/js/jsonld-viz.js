@@ -1,7 +1,10 @@
-require(['https://d3js.org/d3.v5.min.js'], function(d3) {
+
 (function () {
   'use strict';
 
+             require(['https://d3js.org/d3.v5.min.js'], function(d3) {
+
+    
   function jsonldVis(jsonld, selector, config) {
 
     if (!arguments.length) return jsonldVis;
@@ -290,9 +293,9 @@ require(['https://d3js.org/d3.v5.min.js'], function(d3) {
   } else {
     d3.jsonldVis = jsonldVis;
   }
-})();
-    
-});
+    });
 
+
+})();
 
 
