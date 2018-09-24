@@ -12,10 +12,12 @@ USER jovyan
 
 WORKDIR /home/jovyan/work/
 
-RUN pip install websocket-client
-RUN pip install rdflib
-RUN pip install pydot
-RUN pip install rdflib-jsonld
-RUN pip install json2html
+COPY setup.py setup.py
+
+COPY rsplib rsplib
+
+RUN ls
+
+RUN pip install -e .
 
 ENTRYPOINT ["start-notebook.sh","--NotebookApp.token=''"]
