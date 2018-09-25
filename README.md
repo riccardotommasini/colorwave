@@ -22,7 +22,7 @@ The tutorial runs 5 containers:
 
 
 
-## Running the tutorial
+## Getting ready for the tutorial
 
 Clone this repository or [download it](https://github.com/riccardotommasini/colorwave/archive/master.zip)
 
@@ -31,6 +31,10 @@ From inside the project folder run
 ```docker-compose pull```
 
 this takes a while
+
+
+## Running the tutorial
+
 
 On the lecturer signal (To run the project)
 
