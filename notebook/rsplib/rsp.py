@@ -12,8 +12,12 @@ from rdflib import Graph, ConjunctiveGraph, plugin,URIRef
 from IPython.display import display_javascript, display_html, display
 import uuid
 
+a = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+rdfstream = URIRef('vocals:RDFStream')
 accessURL = URIRef("http://www.w3.org/ns/dcat#accessURL")
 accessURLshort = URIRef("dcat:accessURL")
+usesShort = URIRef("prov:uses")
+uses = URIRef("http://www.w3.org/ns/prov#uses")
 
 import pandas as pd
 
@@ -85,7 +89,7 @@ class Endpoint(object):
         if(self.http):
             return JSONResult(requests.request(self.method, self.url).json())
         else:
-            print("Single Connection to WebSocket.")
+            print("WARNING: WebSocket will be open for a single connection!")
             ws = create_connection(self.url)
             result =  ws.recv()
             ws.close()
@@ -96,8 +100,8 @@ class Endpoint(object):
 
     def __repr__(self):
         return self.method + " " + self.url
-
-class Stream(JSONLDResult):
+     
+class Task(JSONLDResult):
     def __init__(self, url=None, graph=None, res=None):
         if url:
             self.url = url
@@ -111,6 +115,33 @@ class Stream(JSONLDResult):
             raise ValueError('uri or graph')
         JSONLDResult.__init__(self, self.g)
     
+    def rdf(self):
+        return self.g
+    
+    def sources(self):
+        l1 = [o.__str__() for s,p,o in self.g.triples( (None, usesShort, None))] 
+        l2 = [o.__str__() for s,p,o in self.g.triples( (None, uses, None))]
+        return [Endpoint(s) for s in list(set(l1 + l2))] 
+    
+class Stream(JSONLDResult):
+    def __init__(self, url=None, graph=None, res=None):
+        if url:
+            self.url = url
+            r = requests.get(url).json()
+            self.g = load_graph(json.dumps(r)) 
+        elif graph:
+            self.g = graph;
+            self.url = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))][0]
+        elif res:
+            self.g = res.rdf()
+            self.url = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))][0]
+        else:
+            raise ValueError('uri or graph')
+        JSONLDResult.__init__(self, self.g)
+    
+    def __repr__(self):
+        return self.url
+
     def sgraph(self):
         return self.g
     
@@ -134,10 +165,12 @@ class RSPService(object):
         return self._JSONLDResults(requests.get(self.base))
 
     def streams(self):
-        return [Stream(s['iri']) for s in requests.get(self.base + "/streams").json()]
+        streams = requests.get(self.base + "/streams").json()
+        return [Stream(url=s['iri']) for s in streams]
     
     def tasks(self):
-        return self._JSONLDResults(requests.get(self.base + "/tasks"))
+        tasks = requests.get(self.base + "/tasks")
+        return [Task(url=s['iri']) for s in tasks]
 
 class RSPPublisher(RSPService):
 
@@ -145,13 +178,23 @@ class RSPPublisher(RSPService):
         RSPService.__init__(self, endpoint) 
     
     def lists(self):
-        return RSPServices.streams()
+        return self.streams()
         
     def gets(self, qid):
-        return self._JSONLDResults(requests.get(self.base + "/streams/" + qid))
+        return Stream(res=requests.get(self.base + "/streams/" + qid))
                               
     def publish(self, vocals):
-        return RSPService._JSONLDResults(requests.post(host+"/streams",  data = json.dumps({'query':vocals}), headers=default_headers))
+        r =requests.post(self.base+"/streams",  data = json.dumps({'query':vocals}), headers=default_headers)
+        return self._JSONLDResults(res=r)
+    
+    def delete(self, strm):
+        sbase = self.base+'/streams/'
+        if sbase in strm:
+            r = requests.delete(strm)
+        else:
+            r = requests.delete(sbase+strm)
+
+        return self._JSONLDResults(res=r)
 
 class RSPEngine(RSPService):
     
@@ -159,23 +202,24 @@ class RSPEngine(RSPService):
         RSPService.__init__(self, endpoint) 
     
     def listq(self):
-        return self._JSONLDResults(requests.get(self.base + "/queries"))
+        tasks = requests.get(self.base + "/queries").json()
+        return [Task(url=t['iri']) for t in tasks]
     
     def tasks(self):
         return self.listq()
 
     def getq(self, qid):
-        return self._JSONLDResults(requests.get(self.base + "/queries/"+qid))
+        return Task(url=self.base + "/queries/"+qid)
                              
     def create(self, idd, query, tbox, frmt="JSON-LD"):
         body = { 'id':idd, 'tbox': tbox, 'body': query, 'format':frmt}
-        return self._JSONLDResults(requests.post(self.base + "/queries", data = json.dumps(body), headers=default_headers))
+        r = requests.post(self.base + "/queries", data = json.dumps(body), headers=default_headers)
+        return Task(res=JSONLDResult(r.json()))
 
     def expose(self, qid, protocol='HTTP', retention=3):
         return Stream(res=self._JSONLDResults(requests.post(self.base + "/observers/" + qid, data = json.dumps({'protocol':protocol, "retention":retention}) , headers=default_headers)))
     
-    def observers(self, qid):
-        print(qid)
+    def observer(self, oid):
         return Stream(res=self._JSONLDResults(requests.get(self.base + "/observers/" + qid)))
     
     def delete(self, qid):
