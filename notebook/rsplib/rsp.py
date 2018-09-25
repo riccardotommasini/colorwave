@@ -13,7 +13,9 @@ from IPython.display import display_javascript, display_html, display
 import uuid
 
 a = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-rdfstream = URIRef('vocals:RDFStream')
+rdfstreamshort = URIRef('vocals:RDFStream')
+rdfstream = URIRef('http://w3id.org/rsp/vocals#RDFStream')
+
 accessURL = URIRef("http://www.w3.org/ns/dcat#accessURL")
 accessURLshort = URIRef("dcat:accessURL")
 usesShort = URIRef("prov:uses")
@@ -131,7 +133,10 @@ class Stream(JSONLDResult):
             self.g = load_graph(json.dumps(r)) 
         elif graph:
             self.g = graph;
-            self.url = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))][0]
+            l1 = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))]
+            l2 = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstreamshort))]
+            l = list(set(l1 + l2))
+            self.url = l[0]
         elif res:
             self.g = res.rdf()
             self.url = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))][0]
@@ -163,7 +168,10 @@ class RSPService(object):
 
     def service(self):
         return self._JSONLDResults(requests.get(self.base))
-
+    
+    def stream(self, sid):
+        return Stream(url=self.base + "/streams/"+sid) 
+    
     def streams(self):
         streams = requests.get(self.base + "/streams").json()
         return [Stream(url=s['iri']) for s in streams]
@@ -207,7 +215,7 @@ class RSPEngine(RSPService):
     
     def tasks(self):
         return self.listq()
-
+    
     def getq(self, qid):
         return Task(url=self.base + "/queries/"+qid)
                              
