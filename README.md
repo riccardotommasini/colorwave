@@ -29,6 +29,12 @@ Clone this repository or [download it](https://github.com/riccardotommasini/colo
 
 From inside the project folder run 
 
+```docker-compose pull```
+
+this takes a while
+
+On the lecturer signal (To run the project)
+
 ```docker-compose up```
 
 Then go to [MyNotebook](http://localhost:8080)
