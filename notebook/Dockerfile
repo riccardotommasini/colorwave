@@ -1,5 +1,7 @@
 FROM  jupyter/datascience-notebook:latest
 
+EXPOSE 8080
+
 USER root
 
 # libav-tools for matplotlib anim
@@ -11,6 +13,8 @@ RUN pip install --upgrade pip
 USER jovyan
 
 WORKDIR /home/jovyan/work/
+
+COPY setup.py setup.py
 
 COPY setup.py setup.py
 

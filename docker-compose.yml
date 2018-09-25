@@ -5,6 +5,15 @@ networks:
 
 services:
 
+    shapestream:
+      image: streamreasoning/shapestream
+      container_name: shapestream
+      ports:
+        - "4040:4040"
+        - "4000:4000"
+      networks:
+        - rwnet  
+
     redstream:
       image: streamreasoning/colorstream
       container_name: redstream

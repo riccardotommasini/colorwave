@@ -21,6 +21,9 @@ accessURLshort = URIRef("dcat:accessURL")
 usesShort = URIRef("prov:uses")
 uses = URIRef("http://www.w3.org/ns/prov#uses")
 
+task = URIRef("http://w3id.org/rsp/vocals-prov#Task")
+taskshort = URIRef("vprov:Task")
+
 import pandas as pd
 
 class JSONResult(object):
@@ -50,7 +53,7 @@ class JSONResult(object):
             raw=True
         )
         display_javascript("""
-        require(["https://rawgit.com/caldwell/renderjson/master/renderjson.js"], function() {
+        require(["http://localhost:8080/files/renderjson.js"], function() {
           document.getElementById('%s').appendChild(renderjson(%s))
         });
         """ % (self.uuid, self.json_str), raw=True)
@@ -104,19 +107,35 @@ class Endpoint(object):
         return self.method + " " + self.url
      
 class Task(JSONLDResult):
-    def __init__(self, url=None, graph=None, res=None):
+    def __init__(self, qid, base, url=None, graph=None, res=None):
+        self.qid  = qid
+        self.base = base
         if url:
             self.url = url
             r = requests.get(url).json()
             self.g = load_graph(json.dumps(r)) 
         elif graph:
             self.g = graph;
+            l1 = [s.__str__() for s,p,o in self.g.triples( (None, a, taskshort))]
+            l2 = [s.__str__() for s,p,o in self.g.triples( (None, a, task))]
+            l = list(set(l1 + l2))
+            self.url = l[0]
         elif res:
             self.g = res.rdf()
+            l1 = [s.__str__() for s,p,o in self.g.triples( (None, a, taskshort))]
+            l2 = [s.__str__() for s,p,o in self.g.triples( (None, a, task))]
+            l = list(set(l1 + l2))
+            self.url = l[0]
         else:
             raise ValueError('uri or graph')
         JSONLDResult.__init__(self, self.g)
     
+    def __repr__(self):
+        return self.url 
+
+    def stream(self):
+        return Stream(url=self.base+"/streams/"+self.qid)
+
     def rdf(self):
         return self.g
     
@@ -139,13 +158,16 @@ class Stream(JSONLDResult):
             self.url = l[0]
         elif res:
             self.g = res.rdf()
-            self.url = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))][0]
+            l1 = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstream))]
+            l2 = [s.__str__() for s,p,o in self.g.triples( (None, a, rdfstreamshort))]
+            l = list(set(l1 + l2))
+            self.url = l[0]
         else:
             raise ValueError('uri or graph')
         JSONLDResult.__init__(self, self.g)
     
     def __repr__(self):
-        return self.url
+        return self.url 
 
     def sgraph(self):
         return self.g
@@ -178,7 +200,7 @@ class RSPService(object):
     
     def tasks(self):
         tasks = requests.get(self.base + "/tasks")
-        return [Task(url=s['iri']) for s in tasks]
+        return [Task(qid=s['iri'].replace(self.base + "/tasks/", ""), base=self.base, url=s['iri']) for s in tasks]
 
 class RSPPublisher(RSPService):
 
@@ -211,18 +233,18 @@ class RSPEngine(RSPService):
     
     def listq(self):
         tasks = requests.get(self.base + "/queries").json()
-        return [Task(url=t['iri']) for t in tasks]
+        return [Task(qid=t['iri'].replace(self.base + "/queries/", ""), base=self.base, url=t['iri']) for t in tasks]
     
     def tasks(self):
         return self.listq()
     
     def getq(self, qid):
-        return Task(url=self.base + "/queries/"+qid)
+        return Task(qid=qid, base=self.base, url=self.base + "/queries/"+qid)
                              
     def create(self, idd, query, tbox, frmt="JSON-LD"):
         body = { 'id':idd, 'tbox': tbox, 'body': query, 'format':frmt}
         r = requests.post(self.base + "/queries", data = json.dumps(body), headers=default_headers)
-        return Task(res=JSONLDResult(r.json()))
+        return Task(qid=idd, base=self.base, res=JSONLDResult(r.json()))
 
     def expose(self, qid, protocol='HTTP', retention=3):
         return Stream(res=self._JSONLDResults(requests.post(self.base + "/observers/" + qid, data = json.dumps({'protocol':protocol, "retention":retention}) , headers=default_headers)))
