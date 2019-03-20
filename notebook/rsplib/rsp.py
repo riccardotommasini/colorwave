@@ -247,7 +247,7 @@ class RSPEngine(RSPService):
         if not "error" in r.text:
             return Task(qid=idd, base=self.base, res=JSONLDResult(r.json()))
         else:
-            return r
+            return r.text
         
     def expose(self, qid, protocol='HTTP', retention=3):
         return Stream(res=self._JSONLDResults(requests.post(self.base + "/observers/" + qid, data = json.dumps({'protocol':protocol, "retention":retention}) , headers=default_headers)))
