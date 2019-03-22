@@ -16,7 +16,7 @@ class RenderJSON(object):
             raw=True
         )
         display_javascript("""
-        require(["https://rawgit.com/caldwell/renderjson/master/renderjson.js"], function() {
+        require(["https://cdn.jsdelivr.net/gh/caldwell/renderjson/renderjson.js"], function() {
           document.getElementById('%s').appendChild(renderjson(%s))
         });
         """ % (self.uuid, self.json_str), raw=True)
