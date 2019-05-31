@@ -81,11 +81,12 @@ services:
         - "8083:8083"
 
     telegraf:
-      image: telegraf
+      build: ./telegraf
       container_name: telegrafd
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - $PWD/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+        - $PWD/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+
     grafana:
       image: grafana/grafana
       container_name: grafanarun
