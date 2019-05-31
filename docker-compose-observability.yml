@@ -1,0 +1,95 @@
+version: '3.5'
+networks:
+  rwnet:
+    name: rwnet
+
+services:
+
+    shapestream:
+      image: streamreasoning/shapestream
+      container_name: shapestream
+      ports:
+        - "4040:4040"
+        - "4000:4000"
+      networks:
+        - rwnet  
+
+    redstream:
+      image: streamreasoning/colorstream
+      container_name: redstream
+      ports:
+        - "1255:1255"
+        - "2551:2551"
+      networks:
+        - rwnet
+      command: 
+        - red
+
+    greenstream:
+      image: streamreasoning/colorstream
+      container_name: greenstream
+      ports:
+        - "2255:2255"
+        - "2552:2552"
+      networks:
+        - rwnet
+      command: 
+        - green
+
+    bluestream:
+      image: streamreasoning/colorstream
+      container_name: bluestream
+      ports:
+        - "3255:3255"
+        - "2553:2553"
+      networks:
+        - rwnet
+      command: 
+        - blue
+
+    streamhub:
+      image: streamreasoning/streamhub:1.1
+      container_name: streamhub
+      ports: 
+        - "9292:9292"
+      networks:
+        - rwnet
+
+    jasper:
+      image: streamreasoning/jasper:1.1
+      container_name: jasper
+      ports:
+        - "8181-8200:8181-8200"
+      networks:
+        - rwnet   
+
+    notebook:
+      build: ./notebook
+      container_name: mynotebook
+      ports:
+        - "8080:8888"
+      networks:
+        - rwnet
+      volumes:
+        - $PWD/notebook/:/home/jovyan/work
+
+    influxdb:
+      image: influxdb
+      container_name: influxdb
+      ports:
+        - "8086:8086"
+        - "8083:8083"
+
+    telegraf:
+      image: telegraf
+      container_name: telegrafd
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - $PWD/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    grafana:
+      image: grafana/grafana
+      container_name: grafanarun
+      ports:
+        - "3000:3000"
+
+
