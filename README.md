@@ -41,3 +41,20 @@ On the lecturer signal (To run the project)
 ```docker-compose up```
 
 Then go to [MyNotebook](http://localhost:8080)
+
+
+## Running with Observability
+
+
+docker-compose -f docker-compose-observability.yml up
+
+./create-dashboard.sh
+
+then go to grafana and observe memory consumption
+at [http://localhost:3000/](http://localhost:3000/)
+
+usr:adming
+pw: adming
+
+
+
