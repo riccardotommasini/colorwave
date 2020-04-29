@@ -1,4 +1,4 @@
-FROM  jupyter/datascience-notebook:latest
+FROM  jupyter/datascience-notebook:aa0ebba9a0a4
 
 EXPOSE 8080
 
