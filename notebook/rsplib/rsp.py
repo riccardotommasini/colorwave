@@ -48,15 +48,11 @@ class JSONResult(object):
     def flatten(self):
         return JSONResult([flatten_json(b) for b in self.json()])
 
-    def _ipython_display_(self):
-        display_html('<div id="{}" style="height: 150px; width:100%;"></div>'.format(self.uuid),
-            raw=True
-        )
-        display_javascript("""
-        require(["http://localhost:8080/files/renderjson.js"], function() {
-          document.getElementById('%s').appendChild(renderjson(%s))
-        });
-        """ % (self.uuid, self.json_str), raw=True)
+    def __str__(self):
+        self.__repr__ ()
+
+    def __repr__(self):
+        return json.dumps(json.loads(self.json_str), indent=4)
 
 class JSONLDResult(JSONResult):
     def __init__(self, json_data):
