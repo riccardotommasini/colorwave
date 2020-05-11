@@ -47,6 +47,14 @@ services:
       command: 
         - blue
 
+    colorstream:
+      image: colorstream
+      container_name: colorstream
+      ports:
+        - "3535:8080"
+      networks:
+        - rwnet
+
     streamhub:
       image: streamreasoning/streamhub:1.1
       container_name: streamhub
