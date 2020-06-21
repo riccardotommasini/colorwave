@@ -16,12 +16,10 @@ WORKDIR /home/jovyan/work/
 
 COPY setup.py setup.py
 
-COPY setup.py setup.py
-
 COPY rsplib rsplib
 
 RUN ls
 
-RUN pip install -e .
+RUN pip install .
 
 ENTRYPOINT ["start-notebook.sh","--NotebookApp.token=''"]
