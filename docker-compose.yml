@@ -4,51 +4,6 @@ networks:
     name: rwnet
 
 services:
-
-    # shapestream:
-    #   image: streamreasoning/shapestream
-    #   container_name: shapestream
-    #   ports:
-    #     - "4040:4040"
-    #     - "4000:4000"
-    #   networks:
-    #     - rwnet  
-
-    redstream:
-      image: streamreasoning/colorstream
-      container_name: redstream
-      ports:
-        - "1255:1255"
-        - "2551:2551"
-      networks:
-        - rwnet
-      command: 
-        - red
-
-    # greenstream:
-    #   image: streamreasoning/colorstream
-    #   container_name: greenstream
-    #   ports:
-    #     - "2255:2255"
-    #     - "2552:2552"
-    #   networks:
-    #     - rwnet
-    #   command: 
-    #     - green
-
-    # bluestream:
-    #   image: streamreasoning/colorstream
-    #   container_name: bluestream
-    #   ports:
-    #     - "3255:3255"
-    #     - "2553:2553"
-    #   networks:
-    #     - rwnet
-    #   command: 
-    #     - blue
-
-    
-
     streamhub:
       image: streamreasoning/streamhub:1.1
       container_name: streamhub
@@ -80,7 +35,7 @@ services:
       ports:
         - "8888:8888"
       volumes:
-        - $PWD/notebook/:/home/jovyan/work
+        - $PWD/notebook/lectures:/home/jovyan/work
       networks:
         - rwnet
 
