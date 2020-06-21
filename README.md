@@ -6,25 +6,20 @@ This is the initial repository for the tutorial
 
 The structure works as follow
 
-- solutions/ folder contains the solution notebooks
-
+- the lecture folder contains the solution notebooks
 
 To run this tutorial you need docker and docker-compose. [Here](https://docs.docker.com/get-started/) there is a tutorial for you to learn how!
 
-
-The tutorial runs 5 containers:
+The tutorial runs 4 containers:
 
 - Jasper - an RSP Engine that will run out continous queries
-- ColorStream - a streamer of color instances in RDF. Three of them will be run: Red, Green and Blue.
-- ShapeStream - a streamer of triangles, squares and circles instances in RDF. 
+- ColorStream - a streamer of color instances in RDF
 - StreamHub - A Stream Publishing Service
 - MyNotebook - A Jupyter Notebook interface to interact with out rdf streams/rsp engines
 
-
-
 ## Getting ready for the tutorial
 
-Clone this repository or [download it](https://github.com/riccardotommasini/colorwave/archive/master.zip)
+Clone this repository
 
 From inside the project folder run 
 
@@ -40,21 +35,4 @@ On the lecturer signal (To run the project)
 
 ```docker-compose up```
 
-Then go to [MyNotebook](http://localhost:8080)
-
-
-## Running with Observability
-
-
-docker-compose -f docker-compose-observability.yml up
-
-./create-dashboard.sh
-
-then go to grafana and observe memory consumption
-at [http://localhost:3000/](http://localhost:3000/)
-
-usr:adming
-pw: adming
-
-
-
+Then go to [MyNotebook](http://localhost:8888)
