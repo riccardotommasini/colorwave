@@ -1,0 +1,17 @@
+{
+  "name": "colorstream",
+  "version": "1.0.0",
+  "description": "A simple JSON-LD colorstrem exposed via Web Socket",
+  "main": "colorstream.js",
+  "scripts": {
+    "start": "node colorstream.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Emanuele Falzone",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "uuid": "^8.0.0",
+    "ws": "^7.2.5"
+  }
+}

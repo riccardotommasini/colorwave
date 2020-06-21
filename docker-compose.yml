@@ -5,14 +5,14 @@ networks:
 
 services:
 
-    shapestream:
-      image: streamreasoning/shapestream
-      container_name: shapestream
-      ports:
-        - "4040:4040"
-        - "4000:4000"
-      networks:
-        - rwnet  
+    # shapestream:
+    #   image: streamreasoning/shapestream
+    #   container_name: shapestream
+    #   ports:
+    #     - "4040:4040"
+    #     - "4000:4000"
+    #   networks:
+    #     - rwnet  
 
     redstream:
       image: streamreasoning/colorstream
@@ -25,35 +25,29 @@ services:
       command: 
         - red
 
-    greenstream:
-      image: streamreasoning/colorstream
-      container_name: greenstream
-      ports:
-        - "2255:2255"
-        - "2552:2552"
-      networks:
-        - rwnet
-      command: 
-        - green
+    # greenstream:
+    #   image: streamreasoning/colorstream
+    #   container_name: greenstream
+    #   ports:
+    #     - "2255:2255"
+    #     - "2552:2552"
+    #   networks:
+    #     - rwnet
+    #   command: 
+    #     - green
 
-    bluestream:
-      image: streamreasoning/colorstream
-      container_name: bluestream
-      ports:
-        - "3255:3255"
-        - "2553:2553"
-      networks:
-        - rwnet
-      command: 
-        - blue
+    # bluestream:
+    #   image: streamreasoning/colorstream
+    #   container_name: bluestream
+    #   ports:
+    #     - "3255:3255"
+    #     - "2553:2553"
+    #   networks:
+    #     - rwnet
+    #   command: 
+    #     - blue
 
-    colorstream:
-      image: colorstream
-      container_name: colorstream
-      ports:
-        - "3535:8080"
-      networks:
-        - rwnet
+    
 
     streamhub:
       image: streamreasoning/streamhub:1.1
@@ -71,13 +65,22 @@ services:
       networks:
         - rwnet   
 
+    colorstream:
+      build: ./colorstream
+      container_name: colorstream
+      ports:
+        - "5555:5555"
+        - "8080:8080"
+      networks:
+        - rwnet
+
     notebook:
       build: ./notebook
       container_name: mynotebook
       ports:
-        - "8080:8888"
-      networks:
-        - rwnet
+        - "8888:8888"
       volumes:
         - $PWD/notebook/:/home/jovyan/work
+      networks:
+        - rwnet
 
