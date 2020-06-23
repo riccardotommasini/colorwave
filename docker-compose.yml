@@ -13,7 +13,7 @@ services:
         - rwnet
 
     jasper:
-      image: streamreasoning/jasper:1.2
+      image: streamreasoning/jasper:1.1
       container_name: jasper
       ports:
         - "8181-8200:8181-8200"
